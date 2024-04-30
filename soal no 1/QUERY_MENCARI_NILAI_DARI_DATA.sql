@@ -40,6 +40,38 @@ FROM (
     WHERE row_number >= @total_rows/2 AND row_number <= (@total_rows+1)/2
 ) AS median_values;
 
+-- MEDIAN DARI HARGA JUAL
+SELECT AVG(median) AS median_sell_price
+FROM (
+    SELECT sell_price AS median
+    FROM (
+        SELECT sell_price, @rownum:=@rownum+1 AS `row_number`, @total_rows:=@total_rows+1 AS `total_rows`
+        FROM data_master, (SELECT @rownum:=0, @total_rows:=0) AS init
+        ORDER BY sell_price
+    ) AS ranked
+    WHERE row_number >= @total_rows/2 AND row_number <= (@total_rows+1)/2
+) AS median_values;
+
+-- MEDIAN DARI NILAI TOTAL_RUPIAH TERJUAL 
+SELECT AVG(median) AS median_total_rupiah
+FROM (
+    SELECT total_rupiah AS median
+    FROM (
+        SELECT total_rupiah, @rownum:=@rownum+1 AS `row_number`, @total_rows:=@total_rows+1 AS `total_rows`
+        FROM data_master, (SELECT @rownum:=0, @total_rows:=0) AS init
+        ORDER BY total_rupiah
+    ) AS ranked
+    WHERE row_number >= @total_rows/2 AND row_number <= (@total_rows+1)/2
+) AS median_values;
+
+SELECT
+	part,
+	`part_name`,
+	COUNT(part) AS jumlah_trx
+FROM `data_master`
+WHERE part = "1LBH35500000" OR part = "5TLE74650000"
+GROUP BY part;
+
 
 
 
